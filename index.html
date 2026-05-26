@@ -1,8 +1,10 @@
-<html lang="fr"><head>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calendrier de travail</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F7F6F2;
@@ -182,20 +184,20 @@
     <div class="toolbar">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" id="search" placeholder="Rechercher un employé (ex: Mehdi)…" oninput="onSearch(this.value)">
-        <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Effacer" style="display: none;">✕</button>
+        <input type="text" id="search" placeholder="Rechercher un employé, vacances, jour férié…" oninput="onSearch(this.value)">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Effacer">✕</button>
       </div>
       <button class="btn btn-primary" onclick="openAdd()">+ Ajouter</button>
     </div>
 
     <div class="cal-nav">
       <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
-      <div class="cal-month" id="cal-month">Mai 2026</div>
+      <div class="cal-month" id="cal-month"></div>
       <button class="nav-btn" onclick="changeMonth(1)">›</button>
     </div>
 
-    <div class="grid-7" id="day-labels"><div class="day-label">Dim</div><div class="day-label">Lun</div><div class="day-label">Mar</div><div class="day-label">Mer</div><div class="day-label">Jeu</div><div class="day-label">Ven</div><div class="day-label">Sam</div></div>
-    <div class="grid-7" id="cal-grid" style="margin-top:4px"><div class="day-cell other" onclick="openAdd('2026-04-26')"><div class="day-num">26</div></div><div class="day-cell other" onclick="openAdd('2026-04-27')"><div class="day-num">27</div></div><div class="day-cell other" onclick="openAdd('2026-04-28')"><div class="day-num">28</div></div><div class="day-cell other" onclick="openAdd('2026-04-29')"><div class="day-num">29</div></div><div class="day-cell other" onclick="openAdd('2026-04-30')"><div class="day-num">30</div></div><div class="day-cell" onclick="openAdd('2026-05-01')"><div class="day-num">1</div></div><div class="day-cell" onclick="openAdd('2026-05-02')"><div class="day-num">2</div></div><div class="day-cell" onclick="openAdd('2026-05-03')"><div class="day-num">3</div></div><div class="day-cell" onclick="openAdd('2026-05-04')"><div class="day-num">4</div></div><div class="day-cell" onclick="openAdd('2026-05-05')"><div class="day-num">5</div></div><div class="day-cell" onclick="openAdd('2026-05-06')"><div class="day-num">6</div></div><div class="day-cell" onclick="openAdd('2026-05-07')"><div class="day-num">7</div></div><div class="day-cell" onclick="openAdd('2026-05-08')"><div class="day-num">8</div></div><div class="day-cell" onclick="openAdd('2026-05-09')"><div class="day-num">9</div></div><div class="day-cell" onclick="openAdd('2026-05-10')"><div class="day-num">10</div></div><div class="day-cell" onclick="openAdd('2026-05-11')"><div class="day-num">11</div></div><div class="day-cell" onclick="openAdd('2026-05-12')"><div class="day-num">12</div><div class="event-pill fete" onclick="openEdit(106);event.stopPropagation()" title="Fête Joe">Fête Joe</div></div><div class="day-cell" onclick="openAdd('2026-05-13')"><div class="day-num">13</div></div><div class="day-cell" onclick="openAdd('2026-05-14')"><div class="day-num">14</div></div><div class="day-cell" onclick="openAdd('2026-05-15')"><div class="day-num">15</div></div><div class="day-cell" onclick="openAdd('2026-05-16')"><div class="day-num">16</div></div><div class="day-cell" onclick="openAdd('2026-05-17')"><div class="day-num">17</div><div class="event-pill fete" onclick="openEdit(101);event.stopPropagation()" title="Fête Imad">Fête Imad</div></div><div class="day-cell" onclick="openAdd('2026-05-18')"><div class="day-num">18</div><div class="event-pill ferie" onclick="openEdit(3);event.stopPropagation()" title="Victoria Day">Victoria Day</div></div><div class="day-cell" onclick="openAdd('2026-05-19')"><div class="day-num">19</div></div><div class="day-cell" onclick="openAdd('2026-05-20')"><div class="day-num">20</div></div><div class="day-cell" onclick="openAdd('2026-05-21')"><div class="day-num">21</div></div><div class="day-cell" onclick="openAdd('2026-05-22')"><div class="day-num">22</div></div><div class="day-cell" onclick="openAdd('2026-05-23')"><div class="day-num">23</div></div><div class="day-cell" onclick="openAdd('2026-05-24')"><div class="day-num">24</div></div><div class="day-cell" onclick="openAdd('2026-05-25')"><div class="day-num">25</div></div><div class="day-cell today" onclick="openAdd('2026-05-26')"><div class="day-num"><div class="today-num">26</div></div></div><div class="day-cell" onclick="openAdd('2026-05-27')"><div class="day-num">27</div></div><div class="day-cell" onclick="openAdd('2026-05-28')"><div class="day-num">28</div></div><div class="day-cell" onclick="openAdd('2026-05-29')"><div class="day-num">29</div><div class="event-pill fete" onclick="openEdit(104);event.stopPropagation()" title="Fête Mario">Fête Mario</div><div class="event-pill fete" onclick="openEdit(105);event.stopPropagation()" title="Fête Nicolas">Fête Nicolas</div></div><div class="day-cell" onclick="openAdd('2026-05-30')"><div class="day-num">30</div></div><div class="day-cell" onclick="openAdd('2026-05-31')"><div class="day-num">31</div></div><div class="day-cell other" onclick="openAdd('2026-06-01')"><div class="day-num">1</div></div><div class="day-cell other" onclick="openAdd('2026-06-02')"><div class="day-num">2</div></div><div class="day-cell other" onclick="openAdd('2026-06-03')"><div class="day-num">3</div></div><div class="day-cell other" onclick="openAdd('2026-06-04')"><div class="day-num">4</div></div><div class="day-cell other" onclick="openAdd('2026-06-05')"><div class="day-num">5</div></div><div class="day-cell other" onclick="openAdd('2026-06-06')"><div class="day-num">6</div></div></div>
+    <div class="grid-7" id="day-labels"></div>
+    <div class="grid-7" id="cal-grid" style="margin-top:4px"></div>
   </div>
 
   <!-- Employee panel -->
@@ -204,55 +206,13 @@
       <span>Employé</span>
       <button class="emp-close" onclick="clearSearch()" title="Fermer">✕</button>
     </div>
-    <div class="emp-panel-name" id="emp-name">Mehdi</div>
-    <div id="emp-events"><div class="emp-section-label">Vacances</div><div class="emp-event">
-        <div class="emp-dot vacances"></div>
-        <div>
-          <div class="emp-event-title">Début Vacance Mehdi</div>
-          <div class="emp-event-date">21 Août 2026</div>
-        </div>
-      </div><div class="emp-event">
-        <div class="emp-dot vacances"></div>
-        <div>
-          <div class="emp-event-title">Fin Vacance Mehdi</div>
-          <div class="emp-event-date">19 Sep 2026</div>
-        </div>
-      </div><div class="emp-section-label">Fêtes</div><div class="emp-event">
-        <div class="emp-dot fete"></div>
-        <div>
-          <div class="emp-event-title">Fête Imad</div>
-          <div class="emp-event-date">17 Mai 2026</div>
-        </div>
-      </div><div class="emp-event">
-        <div class="emp-dot fete"></div>
-        <div>
-          <div class="emp-event-title">Fête Mario</div>
-          <div class="emp-event-date">29 Mai 2026</div>
-        </div>
-      </div><div class="emp-event">
-        <div class="emp-dot fete"></div>
-        <div>
-          <div class="emp-event-title">Fête Mark</div>
-          <div class="emp-event-date">26 Jul 2026</div>
-        </div>
-      </div><div class="emp-event">
-        <div class="emp-dot fete"></div>
-        <div>
-          <div class="emp-event-title">Fête Mehdi</div>
-          <div class="emp-event-date">16 Sep 2026</div>
-        </div>
-      </div><div class="emp-event">
-        <div class="emp-dot fete"></div>
-        <div>
-          <div class="emp-event-title">Fête Benjamin</div>
-          <div class="emp-event-date">12 Jan 2027</div>
-        </div>
-      </div></div>
+    <div class="emp-panel-name" id="emp-name"></div>
+    <div id="emp-events"></div>
   </div>
 </div>
 
 <div id="modal-root"></div>
-<div class="toast" id="toast">Données exportées ✓</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const DAYS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
@@ -260,7 +220,57 @@ const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aoû
 const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Août','Sep','Oct','Nov','Déc'];
 
 let cur = new Date(); cur.setDate(1);
-let events = [{"id":1,"date":"2026-01-01","title":"Jour de l'An","type":"ferie","employe":""},{"id":2,"date":"2026-04-03","title":"Vendredi Saint","type":"ferie","employe":""},{"id":3,"date":"2026-05-18","title":"Victoria Day","type":"ferie","employe":""},{"id":4,"date":"2026-06-24","title":"Fête Nationale (QC)","type":"ferie","employe":""},{"id":5,"date":"2026-07-01","title":"Fête du Canada","type":"ferie","employe":""},{"id":6,"date":"2026-09-07","title":"Fête du Travail","type":"ferie","employe":""},{"id":7,"date":"2026-10-12","title":"Action de Grâces","type":"ferie","employe":""},{"id":8,"date":"2026-12-25","title":"Noël","type":"ferie","employe":""},{"id":9,"date":"2026-12-26","title":"Lendemain de Noël","type":"ferie","employe":""},{"id":100,"title":"Fête Evelyne","date":"2026-06-18","type":"fete","employe":"Evelyne"},{"id":101,"title":"Fête Imad","date":"2026-05-17","type":"fete","employe":"Imad"},{"id":102,"title":"Fête Julian","date":"2026-04-09","type":"fete","employe":"Julian"},{"id":103,"title":"Fête Edur","date":"2026-04-06","type":"fete","employe":"Edur"},{"id":104,"title":"Fête Mario","date":"2026-05-29","type":"fete","employe":"Mario"},{"id":105,"title":"Fête Nicolas","date":"2026-05-29","type":"fete","employe":"Nicolas"},{"id":106,"title":"Fête Joe","date":"2026-05-12","type":"fete","employe":"Joe"},{"id":107,"title":"Fête Mark","date":"2026-07-26","type":"fete","employe":"Mark"},{"id":108,"title":"Fête Abdel","date":"2026-09-08","type":"fete","employe":"Abdel"},{"id":109,"title":"Fête Mehdi","date":"2026-09-16","type":"fete","employe":"Mehdi"},{"id":110,"title":"Fête Natalia","date":"2026-10-30","type":"fete","employe":"Natalia"},{"id":111,"title":"Fête Benjamin","date":"2027-01-12","type":"fete","employe":"Benjamin"},{"id":112,"title":"Fête Gabriel","date":"2027-01-14","type":"fete","employe":"Gabriel"},{"id":113,"title":"Fête Anthony","date":"2027-01-22","type":"fete","employe":"Anthony"},{"id":114,"title":"Fête Oliver","date":"2027-01-06","type":"fete","employe":"Oliver"},{"id":115,"title":"Fête Ana Paula","date":"2027-02-22","type":"fete","employe":"Ana Paula"},{"id":116,"title":"Fête Gaetan","date":"2027-03-03","type":"fete","employe":"Gaetan"},{"id":117,"title":"Début Vacance Mehdi","date":"2026-08-21","type":"vacances","employe":"Mehdi"},{"id":118,"title":"Fin Vacance Mehdi","date":"2026-09-19","type":"vacances","employe":"Mehdi"}];
+let events = [
+{"id":1,"date":"2026-01-01","title":"Jour de l'An","type":"ferie","employe":""},
+{"id":2,"date":"2026-04-03","title":"Vendredi Saint","type":"ferie","employe":""},
+{"id":3,"date":"2026-04-06","title":"Lundi de Pâques","type":"ferie","employe":""},
+{"id":4,"date":"2026-05-18","title":"Journée des Patriotes","type":"ferie","employe":""},
+{"id":5,"date":"2026-06-24","title":"Fête Nationale (QC)","type":"ferie","employe":""},
+{"id":6,"date":"2026-07-01","title":"Fête du Canada","type":"ferie","employe":""},
+{"id":7,"date":"2026-09-07","title":"Fête du Travail","type":"ferie","employe":""},
+{"id":8,"date":"2026-10-12","title":"Action de Grâces","type":"ferie","employe":""},
+{"id":9,"date":"2026-12-25","title":"Noël","type":"ferie","employe":""},
+{"id":10,"date":"2026-12-26","title":"Lendemain de Noël","type":"ferie","employe":""},
+{"id":11,"date":"2027-01-01","title":"Jour de l'An","type":"ferie","employe":""},
+{"id":12,"date":"2027-03-26","title":"Vendredi Saint","type":"ferie","employe":""},
+{"id":13,"date":"2027-03-29","title":"Lundi de Pâques","type":"ferie","employe":""},
+{"id":14,"date":"2027-05-24","title":"Journée des Patriotes","type":"ferie","employe":""},
+{"id":15,"date":"2027-06-24","title":"Fête Nationale (QC)","type":"ferie","employe":""},
+{"id":16,"date":"2027-07-01","title":"Fête du Canada","type":"ferie","employe":""},
+{"id":17,"date":"2027-09-06","title":"Fête du Travail","type":"ferie","employe":""},
+{"id":18,"date":"2027-10-11","title":"Action de Grâces","type":"ferie","employe":""},
+{"id":19,"date":"2027-12-25","title":"Noël","type":"ferie","employe":""},
+{"id":20,"date":"2027-12-26","title":"Lendemain de Noël","type":"ferie","employe":""},
+{"id":21,"date":"2028-01-01","title":"Jour de l'An","type":"ferie","employe":""},
+{"id":22,"date":"2028-04-14","title":"Vendredi Saint","type":"ferie","employe":""},
+{"id":23,"date":"2028-04-17","title":"Lundi de Pâques","type":"ferie","employe":""},
+{"id":24,"date":"2028-05-22","title":"Journée des Patriotes","type":"ferie","employe":""},
+{"id":25,"date":"2028-06-24","title":"Fête Nationale (QC)","type":"ferie","employe":""},
+{"id":26,"date":"2028-07-03","title":"Fête du Canada (reportée)","type":"ferie","employe":""},
+{"id":27,"date":"2028-09-04","title":"Fête du Travail","type":"ferie","employe":""},
+{"id":28,"date":"2028-10-09","title":"Action de Grâces","type":"ferie","employe":""},
+{"id":29,"date":"2028-12-25","title":"Noël","type":"ferie","employe":""},
+{"id":30,"date":"2028-12-26","title":"Lendemain de Noël","type":"ferie","employe":""},
+{"id":100,"title":"Fête Evelyne","date":"2026-06-18","type":"fete","employe":"Evelyne"},
+{"id":101,"title":"Fête Imad","date":"2026-05-17","type":"fete","employe":"Imad"},
+{"id":102,"title":"Fête Julian","date":"2026-04-09","type":"fete","employe":"Julian"},
+{"id":103,"title":"Fête Edur","date":"2026-04-06","type":"fete","employe":"Edur"},
+{"id":104,"title":"Fête Mario","date":"2026-05-29","type":"fete","employe":"Mario"},
+{"id":105,"title":"Fête Nicolas","date":"2026-05-29","type":"fete","employe":"Nicolas"},
+{"id":106,"title":"Fête Joe","date":"2026-05-12","type":"fete","employe":"Joe"},
+{"id":107,"title":"Fête Mark","date":"2026-07-26","type":"fete","employe":"Mark"},
+{"id":108,"title":"Fête Abdel","date":"2026-09-08","type":"fete","employe":"Abdel"},
+{"id":109,"title":"Fête Mehdi","date":"2026-09-16","type":"fete","employe":"Mehdi"},
+{"id":110,"title":"Fête Natalia","date":"2026-10-30","type":"fete","employe":"Natalia"},
+{"id":111,"title":"Fête Benjamin","date":"2027-01-12","type":"fete","employe":"Benjamin"},
+{"id":112,"title":"Fête Gabriel","date":"2027-01-14","type":"fete","employe":"Gabriel"},
+{"id":113,"title":"Fête Anthony","date":"2027-01-22","type":"fete","employe":"Anthony"},
+{"id":114,"title":"Fête Oliver","date":"2027-01-06","type":"fete","employe":"Oliver"},
+{"id":115,"title":"Fête Ana Paula","date":"2027-02-22","type":"fete","employe":"Ana Paula"},
+{"id":116,"title":"Fête Gaetan","date":"2027-03-03","type":"fete","employe":"Gaetan"},
+{"id":117,"title":"Début Vacance Mehdi","date":"2026-08-21","type":"vacances","employe":"Mehdi"},
+{"id":118,"title":"Fin Vacance Mehdi","date":"2026-09-19","type":"vacances","employe":"Mehdi"}
+];
 let nextId = 200;
 
 let activeEmp = '';
@@ -293,12 +303,19 @@ function updateEmpPanel(q){
   const panel = document.getElementById('emp-panel');
   if(!q){ panel.classList.add('hidden'); return; }
 
-  const matched = events.filter(e => e.employe && e.employe.toLowerCase().includes(q.toLowerCase()));
+  const ql = q.toLowerCase();
+  const matched = events.filter(e => (e.title+e.employe+e.type).toLowerCase().includes(ql));
   if(!matched.length){ panel.classList.add('hidden'); return; }
 
-  // Determine the matched name (use the most common)
-  const names = matched.map(e=>e.employe);
-  const name = names.sort((a,b) => names.filter(x=>x===b).length - names.filter(x=>x===a).length)[0];
+  // Determine panel title
+  let name;
+  if(ql.includes('féri') || ql === 'ferie') name = 'Jours fériés';
+  else if(ql.includes('vac')) name = 'Vacances';
+  else if(ql.includes('fête') || ql.includes('fete')) name = 'Fêtes employés';
+  else {
+    const names = matched.map(e=>e.employe).filter(Boolean);
+    name = names.length ? names.sort((a,b) => names.filter(x=>x===b).length - names.filter(x=>x===a).length)[0] : q;
+  }
 
   panel.classList.remove('hidden');
   document.getElementById('emp-name').textContent = name;
@@ -346,7 +363,7 @@ function render(){
     else{day=i-firstDay+1;}
     const d=ds(yr,mo,day);
     const isToday=yr===today.getFullYear()&&mo===today.getMonth()&&day===today.getDate();
-    const evs=events.filter(e=>e.date===d&&(!q||(e.title+e.employe).toLowerCase().includes(q)));
+    const evs=events.filter(e=>e.date===d&&(!q||(e.title+e.employe+e.type).toLowerCase().includes(q)));
     const numEl=isToday
       ? `<div class="day-num"><div class="today-num">${day}</div></div>`
       : `<div class="day-num">${day}</div>`;
@@ -473,6 +490,5 @@ function exportHTML(){
 
 render();
 </script>
-
-
-</body></html>
+</body>
+</html>
