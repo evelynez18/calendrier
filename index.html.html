@@ -1,0 +1,478 @@
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendrier de travail</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E2E0D8;
+    --border-strong: #C8C5BB;
+    --text: #1A1916;
+    --text-muted: #7A7870;
+    --text-faint: #B0AEA6;
+    --blue: #2563EB;
+    --blue-bg: #BFDBFE;
+    --blue-text: #1E3A8A;
+    --green: #16A34A;
+    --green-bg: #F0FDF4;
+    --green-text: #166534;
+    --amber: #D97706;
+    --amber-bg: #FFFBEB;
+    --amber-text: #92400E;
+    --red: #DC2626;
+    --red-bg: #FEF2F2;
+    --red-text: #991B1B;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .layout { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+  .main { flex: 1; min-width: 0; }
+
+  /* Header */
+  .app-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+  }
+  .app-title { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; color: var(--text); }
+  .app-title span { color: var(--text-muted); font-weight: 400; font-size: 15px; margin-left: 8px; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: var(--radius);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); transition: background .15s, border-color .15s; white-space: nowrap;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--border-strong); }
+  .btn-primary { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn-primary:hover { background: #333; border-color: #333; }
+  .btn-danger { background: var(--red-bg); color: var(--red-text); border-color: #FCA5A5; }
+  .btn-danger:hover { background: #FEE2E2; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  /* Toolbar */
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .search-wrap { flex: 1; min-width: 180px; position: relative; }
+  .search-wrap input {
+    width: 100%; padding: 8px 12px 8px 34px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: inherit; font-size: 13px; background: var(--surface); color: var(--text); outline: none;
+  }
+  .search-wrap input:focus { border-color: var(--blue); }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 15px; pointer-events: none; }
+  .search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 16px; display: none; line-height: 1; }
+
+  /* Legend */
+  .legend { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Calendar nav */
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .cal-month { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .nav-btn {
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); cursor: pointer; font-size: 16px; color: var(--text-muted); transition: background .15s;
+  }
+  .nav-btn:hover { background: var(--bg); color: var(--text); }
+
+  /* Grid */
+  .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .day-label { text-align: center; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); padding: 6px 0; }
+  .day-cell {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 6px 7px;
+    min-height: 88px; cursor: pointer; transition: border-color .15s; position: relative;
+  }
+  .day-cell:hover { border-color: var(--border-strong); }
+  .day-cell.other { background: var(--bg); }
+  .day-cell.other .day-num { color: var(--text-faint); }
+  .day-cell.today { border-color: var(--blue); }
+  .day-num { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .today-num { background: var(--blue); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .event-pill {
+    font-size: 10.5px; border-radius: 4px; padding: 2px 5px; margin-bottom: 2px;
+    cursor: pointer; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-weight: 500; line-height: 1.5;
+  }
+  .event-pill.vacances { background: var(--blue-bg); color: var(--blue-text); }
+  .event-pill.fete { background: var(--green-bg); color: var(--green-text); }
+  .event-pill.ferie { background: var(--amber-bg); color: var(--amber-text); }
+  .event-pill:hover { filter: brightness(.93); }
+  .more-badge { font-size: 10px; color: var(--text-faint); font-weight: 500; margin-top: 1px; }
+
+  /* Employee panel */
+  .emp-panel {
+    width: 260px; flex-shrink: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
+    position: sticky; top: 24px;
+  }
+  .emp-panel-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+  .emp-panel-name { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 16px; color: var(--blue); word-break: break-word; }
+  .emp-close { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 18px; line-height: 1; }
+  .emp-close:hover { color: var(--text); }
+  .emp-section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); margin: 12px 0 6px; }
+  .emp-event {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .emp-event:last-child { border-bottom: none; }
+  .emp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .emp-dot.vacances { background: var(--blue); }
+  .emp-dot.fete { background: var(--green); }
+  .emp-dot.ferie { background: var(--amber); }
+  .emp-event-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .emp-event-date { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .emp-empty { font-size: 13px; color: var(--text-faint); text-align: center; padding: 20px 0; }
+  .emp-panel.hidden { display: none; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .modal { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 24px; width: 360px; max-width: calc(100vw - 32px); box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+  .modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
+  .field input, .field select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 14px; background: var(--surface); color: var(--text); outline: none; }
+  .field input:focus, .field select:focus { border-color: var(--blue); }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; align-items: center; }
+  .modal-actions .left { margin-right: auto; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: #fff; padding: 10px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; transition: transform .3s ease; z-index: 300; pointer-events: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="main">
+    <div class="app-header">
+      <div>
+        <div class="app-title">Calendrier de travail <span>Partagé</span></div>
+      </div>
+      <div class="header-actions">
+        <label class="btn" title="Importer les données (JSON)">
+          ↑ Importer
+          <input type="file" accept=".json" id="import-input" style="display:none" onchange="importData(this)">
+        </label>
+        <button class="btn" onclick="exportData()">↓ Exporter</button>
+        <button class="btn btn-primary" onclick="exportHTML()">🔗 Partager (HTML)</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#1E40AF"></div>Vacances</div>
+      <div class="leg"><div class="leg-dot" style="background:#16A34A"></div>Fête employé</div>
+      <div class="leg"><div class="leg-dot" style="background:#D97706"></div>Jour férié</div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="Rechercher un employé (ex: Mehdi)…" oninput="onSearch(this.value)">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Effacer" style="display: none;">✕</button>
+      </div>
+      <button class="btn btn-primary" onclick="openAdd()">+ Ajouter</button>
+    </div>
+
+    <div class="cal-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-month" id="cal-month">Mai 2026</div>
+      <button class="nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="grid-7" id="day-labels"><div class="day-label">Dim</div><div class="day-label">Lun</div><div class="day-label">Mar</div><div class="day-label">Mer</div><div class="day-label">Jeu</div><div class="day-label">Ven</div><div class="day-label">Sam</div></div>
+    <div class="grid-7" id="cal-grid" style="margin-top:4px"><div class="day-cell other" onclick="openAdd('2026-04-26')"><div class="day-num">26</div></div><div class="day-cell other" onclick="openAdd('2026-04-27')"><div class="day-num">27</div></div><div class="day-cell other" onclick="openAdd('2026-04-28')"><div class="day-num">28</div></div><div class="day-cell other" onclick="openAdd('2026-04-29')"><div class="day-num">29</div></div><div class="day-cell other" onclick="openAdd('2026-04-30')"><div class="day-num">30</div></div><div class="day-cell" onclick="openAdd('2026-05-01')"><div class="day-num">1</div></div><div class="day-cell" onclick="openAdd('2026-05-02')"><div class="day-num">2</div></div><div class="day-cell" onclick="openAdd('2026-05-03')"><div class="day-num">3</div></div><div class="day-cell" onclick="openAdd('2026-05-04')"><div class="day-num">4</div></div><div class="day-cell" onclick="openAdd('2026-05-05')"><div class="day-num">5</div></div><div class="day-cell" onclick="openAdd('2026-05-06')"><div class="day-num">6</div></div><div class="day-cell" onclick="openAdd('2026-05-07')"><div class="day-num">7</div></div><div class="day-cell" onclick="openAdd('2026-05-08')"><div class="day-num">8</div></div><div class="day-cell" onclick="openAdd('2026-05-09')"><div class="day-num">9</div></div><div class="day-cell" onclick="openAdd('2026-05-10')"><div class="day-num">10</div></div><div class="day-cell" onclick="openAdd('2026-05-11')"><div class="day-num">11</div></div><div class="day-cell" onclick="openAdd('2026-05-12')"><div class="day-num">12</div><div class="event-pill fete" onclick="openEdit(106);event.stopPropagation()" title="Fête Joe">Fête Joe</div></div><div class="day-cell" onclick="openAdd('2026-05-13')"><div class="day-num">13</div></div><div class="day-cell" onclick="openAdd('2026-05-14')"><div class="day-num">14</div></div><div class="day-cell" onclick="openAdd('2026-05-15')"><div class="day-num">15</div></div><div class="day-cell" onclick="openAdd('2026-05-16')"><div class="day-num">16</div></div><div class="day-cell" onclick="openAdd('2026-05-17')"><div class="day-num">17</div><div class="event-pill fete" onclick="openEdit(101);event.stopPropagation()" title="Fête Imad">Fête Imad</div></div><div class="day-cell" onclick="openAdd('2026-05-18')"><div class="day-num">18</div><div class="event-pill ferie" onclick="openEdit(3);event.stopPropagation()" title="Victoria Day">Victoria Day</div></div><div class="day-cell" onclick="openAdd('2026-05-19')"><div class="day-num">19</div></div><div class="day-cell" onclick="openAdd('2026-05-20')"><div class="day-num">20</div></div><div class="day-cell" onclick="openAdd('2026-05-21')"><div class="day-num">21</div></div><div class="day-cell" onclick="openAdd('2026-05-22')"><div class="day-num">22</div></div><div class="day-cell" onclick="openAdd('2026-05-23')"><div class="day-num">23</div></div><div class="day-cell" onclick="openAdd('2026-05-24')"><div class="day-num">24</div></div><div class="day-cell" onclick="openAdd('2026-05-25')"><div class="day-num">25</div></div><div class="day-cell today" onclick="openAdd('2026-05-26')"><div class="day-num"><div class="today-num">26</div></div></div><div class="day-cell" onclick="openAdd('2026-05-27')"><div class="day-num">27</div></div><div class="day-cell" onclick="openAdd('2026-05-28')"><div class="day-num">28</div></div><div class="day-cell" onclick="openAdd('2026-05-29')"><div class="day-num">29</div><div class="event-pill fete" onclick="openEdit(104);event.stopPropagation()" title="Fête Mario">Fête Mario</div><div class="event-pill fete" onclick="openEdit(105);event.stopPropagation()" title="Fête Nicolas">Fête Nicolas</div></div><div class="day-cell" onclick="openAdd('2026-05-30')"><div class="day-num">30</div></div><div class="day-cell" onclick="openAdd('2026-05-31')"><div class="day-num">31</div></div><div class="day-cell other" onclick="openAdd('2026-06-01')"><div class="day-num">1</div></div><div class="day-cell other" onclick="openAdd('2026-06-02')"><div class="day-num">2</div></div><div class="day-cell other" onclick="openAdd('2026-06-03')"><div class="day-num">3</div></div><div class="day-cell other" onclick="openAdd('2026-06-04')"><div class="day-num">4</div></div><div class="day-cell other" onclick="openAdd('2026-06-05')"><div class="day-num">5</div></div><div class="day-cell other" onclick="openAdd('2026-06-06')"><div class="day-num">6</div></div></div>
+  </div>
+
+  <!-- Employee panel -->
+  <div class="emp-panel hidden" id="emp-panel">
+    <div class="emp-panel-title">
+      <span>Employé</span>
+      <button class="emp-close" onclick="clearSearch()" title="Fermer">✕</button>
+    </div>
+    <div class="emp-panel-name" id="emp-name">Mehdi</div>
+    <div id="emp-events"><div class="emp-section-label">Vacances</div><div class="emp-event">
+        <div class="emp-dot vacances"></div>
+        <div>
+          <div class="emp-event-title">Début Vacance Mehdi</div>
+          <div class="emp-event-date">21 Août 2026</div>
+        </div>
+      </div><div class="emp-event">
+        <div class="emp-dot vacances"></div>
+        <div>
+          <div class="emp-event-title">Fin Vacance Mehdi</div>
+          <div class="emp-event-date">19 Sep 2026</div>
+        </div>
+      </div><div class="emp-section-label">Fêtes</div><div class="emp-event">
+        <div class="emp-dot fete"></div>
+        <div>
+          <div class="emp-event-title">Fête Imad</div>
+          <div class="emp-event-date">17 Mai 2026</div>
+        </div>
+      </div><div class="emp-event">
+        <div class="emp-dot fete"></div>
+        <div>
+          <div class="emp-event-title">Fête Mario</div>
+          <div class="emp-event-date">29 Mai 2026</div>
+        </div>
+      </div><div class="emp-event">
+        <div class="emp-dot fete"></div>
+        <div>
+          <div class="emp-event-title">Fête Mark</div>
+          <div class="emp-event-date">26 Jul 2026</div>
+        </div>
+      </div><div class="emp-event">
+        <div class="emp-dot fete"></div>
+        <div>
+          <div class="emp-event-title">Fête Mehdi</div>
+          <div class="emp-event-date">16 Sep 2026</div>
+        </div>
+      </div><div class="emp-event">
+        <div class="emp-dot fete"></div>
+        <div>
+          <div class="emp-event-title">Fête Benjamin</div>
+          <div class="emp-event-date">12 Jan 2027</div>
+        </div>
+      </div></div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div class="toast" id="toast">Données exportées ✓</div>
+
+<script>
+const DAYS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Août','Sep','Oct','Nov','Déc'];
+
+let cur = new Date(); cur.setDate(1);
+let events = [{"id":1,"date":"2026-01-01","title":"Jour de l'An","type":"ferie","employe":""},{"id":2,"date":"2026-04-03","title":"Vendredi Saint","type":"ferie","employe":""},{"id":3,"date":"2026-05-18","title":"Victoria Day","type":"ferie","employe":""},{"id":4,"date":"2026-06-24","title":"Fête Nationale (QC)","type":"ferie","employe":""},{"id":5,"date":"2026-07-01","title":"Fête du Canada","type":"ferie","employe":""},{"id":6,"date":"2026-09-07","title":"Fête du Travail","type":"ferie","employe":""},{"id":7,"date":"2026-10-12","title":"Action de Grâces","type":"ferie","employe":""},{"id":8,"date":"2026-12-25","title":"Noël","type":"ferie","employe":""},{"id":9,"date":"2026-12-26","title":"Lendemain de Noël","type":"ferie","employe":""},{"id":100,"title":"Fête Evelyne","date":"2026-06-18","type":"fete","employe":"Evelyne"},{"id":101,"title":"Fête Imad","date":"2026-05-17","type":"fete","employe":"Imad"},{"id":102,"title":"Fête Julian","date":"2026-04-09","type":"fete","employe":"Julian"},{"id":103,"title":"Fête Edur","date":"2026-04-06","type":"fete","employe":"Edur"},{"id":104,"title":"Fête Mario","date":"2026-05-29","type":"fete","employe":"Mario"},{"id":105,"title":"Fête Nicolas","date":"2026-05-29","type":"fete","employe":"Nicolas"},{"id":106,"title":"Fête Joe","date":"2026-05-12","type":"fete","employe":"Joe"},{"id":107,"title":"Fête Mark","date":"2026-07-26","type":"fete","employe":"Mark"},{"id":108,"title":"Fête Abdel","date":"2026-09-08","type":"fete","employe":"Abdel"},{"id":109,"title":"Fête Mehdi","date":"2026-09-16","type":"fete","employe":"Mehdi"},{"id":110,"title":"Fête Natalia","date":"2026-10-30","type":"fete","employe":"Natalia"},{"id":111,"title":"Fête Benjamin","date":"2027-01-12","type":"fete","employe":"Benjamin"},{"id":112,"title":"Fête Gabriel","date":"2027-01-14","type":"fete","employe":"Gabriel"},{"id":113,"title":"Fête Anthony","date":"2027-01-22","type":"fete","employe":"Anthony"},{"id":114,"title":"Fête Oliver","date":"2027-01-06","type":"fete","employe":"Oliver"},{"id":115,"title":"Fête Ana Paula","date":"2027-02-22","type":"fete","employe":"Ana Paula"},{"id":116,"title":"Fête Gaetan","date":"2027-03-03","type":"fete","employe":"Gaetan"},{"id":117,"title":"Début Vacance Mehdi","date":"2026-08-21","type":"vacances","employe":"Mehdi"},{"id":118,"title":"Fin Vacance Mehdi","date":"2026-09-19","type":"vacances","employe":"Mehdi"}];
+let nextId = 200;
+
+let activeEmp = '';
+
+function pad(n){return String(n).padStart(2,'0');}
+function ds(y,m,d){return `${y}-${pad(m+1)}-${pad(d)}`;}
+
+function fmtDate(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return `${d} ${MONTHS_SHORT[m-1]} ${y}`;
+}
+
+function onSearch(val){
+  const q = val.trim();
+  document.getElementById('search-clear').style.display = q ? 'block' : 'none';
+  activeEmp = q;
+  render();
+  updateEmpPanel(q);
+}
+
+function clearSearch(){
+  document.getElementById('search').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  activeEmp = '';
+  render();
+  document.getElementById('emp-panel').classList.add('hidden');
+}
+
+function updateEmpPanel(q){
+  const panel = document.getElementById('emp-panel');
+  if(!q){ panel.classList.add('hidden'); return; }
+
+  const matched = events.filter(e => e.employe && e.employe.toLowerCase().includes(q.toLowerCase()));
+  if(!matched.length){ panel.classList.add('hidden'); return; }
+
+  // Determine the matched name (use the most common)
+  const names = matched.map(e=>e.employe);
+  const name = names.sort((a,b) => names.filter(x=>x===b).length - names.filter(x=>x===a).length)[0];
+
+  panel.classList.remove('hidden');
+  document.getElementById('emp-name').textContent = name;
+
+  // Sort by date
+  const sorted = [...matched].sort((a,b) => a.date.localeCompare(b.date));
+
+  // Group by type
+  const byType = { vacances: sorted.filter(e=>e.type==='vacances'), fete: sorted.filter(e=>e.type==='fete'), ferie: sorted.filter(e=>e.type==='ferie') };
+  const labels = { vacances: 'Vacances', fete: 'Fêtes', ferie: 'Jours fériés' };
+
+  let html = '';
+  for(const [type, evs] of Object.entries(byType)){
+    if(!evs.length) continue;
+    html += `<div class="emp-section-label">${labels[type]}</div>`;
+    evs.forEach(e => {
+      html += `<div class="emp-event">
+        <div class="emp-dot ${type}"></div>
+        <div>
+          <div class="emp-event-title">${e.title}</div>
+          <div class="emp-event-date">${fmtDate(e.date)}</div>
+        </div>
+      </div>`;
+    });
+  }
+  if(!html) html = '<div class="emp-empty">Aucun événement trouvé</div>';
+  document.getElementById('emp-events').innerHTML = html;
+}
+
+function render(){
+  const q = activeEmp.toLowerCase();
+  const y = cur.getFullYear(), m = cur.getMonth();
+  document.getElementById('cal-month').textContent = `${MONTHS[m]} ${y}`;
+  document.getElementById('day-labels').innerHTML = DAYS.map(d=>`<div class="day-label">${d}</div>`).join('');
+  const firstDay = new Date(y,m,1).getDay();
+  const dim = new Date(y,m+1,0).getDate();
+  const dip = new Date(y,m,0).getDate();
+  const today = new Date();
+  const rows = Math.ceil((firstDay+dim)/7)*7;
+  let html='';
+  for(let i=0;i<rows;i++){
+    let day, mo=m, yr=y, other=false;
+    if(i<firstDay){day=dip-(firstDay-1-i);mo=m-1;if(mo<0){mo=11;yr--;}other=true;}
+    else if(i>=firstDay+dim){day=i-(firstDay+dim)+1;mo=m+1;if(mo>11){mo=0;yr++;}other=true;}
+    else{day=i-firstDay+1;}
+    const d=ds(yr,mo,day);
+    const isToday=yr===today.getFullYear()&&mo===today.getMonth()&&day===today.getDate();
+    const evs=events.filter(e=>e.date===d&&(!q||(e.title+e.employe).toLowerCase().includes(q)));
+    const numEl=isToday
+      ? `<div class="day-num"><div class="today-num">${day}</div></div>`
+      : `<div class="day-num">${day}</div>`;
+    const maxShow=2;
+    const pills=evs.slice(0,maxShow).map(e=>`<div class="event-pill ${e.type}" onclick="openEdit(${e.id});event.stopPropagation()" title="${e.title}">${e.title}</div>`).join('');
+    const more=evs.length>maxShow?`<div class="more-badge">+${evs.length-maxShow} autre${evs.length-maxShow>1?'s':''}</div>`:'';
+    html+=`<div class="day-cell${other?' other':''}${isToday?' today':''}" onclick="openAdd('${d}')">${numEl}${pills}${more}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+}
+
+function changeMonth(d){cur.setMonth(cur.getMonth()+d);render();}
+
+function openAdd(preDate=''){
+  const today=new Date();
+  const def=preDate||ds(today.getFullYear(),today.getMonth(),today.getDate());
+  modal(`<h2>Nouvel événement</h2>
+    <div class="field"><label>Titre</label><input id="m-t" type="text" placeholder="Ex: Vacances été — Marie Dupont"></div>
+    <div class="field"><label>Date</label><input id="m-d" type="date" value="${def}"></div>
+    <div class="field"><label>Catégorie</label><select id="m-c">
+      <option value="vacances">Vacances</option>
+      <option value="fete">Fête employé</option>
+      <option value="ferie">Jour férié</option>
+    </select></div>
+    <div class="field"><label>Employé (optionnel)</label><input id="m-e" type="text" placeholder="Nom de l'employé"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveNew()">Ajouter</button>
+    </div>`);
+}
+
+function openEdit(id){
+  const e=events.find(x=>x.id===id);
+  if(!e)return;
+  modal(`<h2>Modifier l'événement</h2>
+    <div class="field"><label>Titre</label><input id="m-t" type="text" value="${e.title}"></div>
+    <div class="field"><label>Date</label><input id="m-d" type="date" value="${e.date}"></div>
+    <div class="field"><label>Catégorie</label><select id="m-c">
+      <option value="vacances"${e.type==='vacances'?' selected':''}>Vacances</option>
+      <option value="fete"${e.type==='fete'?' selected':''}>Fête employé</option>
+      <option value="ferie"${e.type==='ferie'?' selected':''}>Jour férié</option>
+    </select></div>
+    <div class="field"><label>Employé</label><input id="m-e" type="text" value="${e.employe}"></div>
+    <div class="modal-actions">
+      <div class="left"><button class="btn btn-danger btn-sm" onclick="delEvent(${id})">Supprimer</button></div>
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEdit(${id})">Sauvegarder</button>
+    </div>`);
+}
+
+function saveNew(){
+  const t=document.getElementById('m-t').value.trim();
+  const d=document.getElementById('m-d').value;
+  if(!t||!d){alert('Veuillez remplir le titre et la date.');return;}
+  events.push({id:nextId++,title:t,date:d,type:document.getElementById('m-c').value,employe:document.getElementById('m-e').value.trim()});
+  closeModal();render();
+  if(activeEmp) updateEmpPanel(activeEmp);
+  toast('Événement ajouté ✓');
+}
+
+function saveEdit(id){
+  const e=events.find(x=>x.id===id);
+  const t=document.getElementById('m-t').value.trim();
+  const d=document.getElementById('m-d').value;
+  if(!t||!d){alert('Veuillez remplir le titre et la date.');return;}
+  e.title=t;e.date=d;e.type=document.getElementById('m-c').value;e.employe=document.getElementById('m-e').value.trim();
+  closeModal();render();
+  if(activeEmp) updateEmpPanel(activeEmp);
+  toast('Événement modifié ✓');
+}
+
+function delEvent(id){
+  if(!confirm('Supprimer cet événement?'))return;
+  events=events.filter(e=>e.id!==id);
+  closeModal();render();
+  if(activeEmp) updateEmpPanel(activeEmp);
+  toast('Événement supprimé');
+}
+
+function modal(html){
+  document.getElementById('modal-root').innerHTML=`<div class="modal-overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">${html}</div></div>`;
+}
+function closeModal(){document.getElementById('modal-root').innerHTML='';}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({version:1,events},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`calendrier-travail-${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('Données exportées ✓');
+}
+
+function importData(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.events)throw new Error();
+      events=data.events;
+      nextId=Math.max(...events.map(e=>e.id))+1;
+      render();toast(`${events.length} événements importés ✓`);
+    }catch{alert('Fichier JSON invalide.');}
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+function exportHTML(){
+  const evJSON=JSON.stringify(events);
+  const src=document.documentElement.outerHTML;
+  const modified=src.replace(/let events = \[[\s\S]*?\];/,`let events = ${evJSON};`);
+  const blob=new Blob([modified],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`calendrier-partage-${new Date().toISOString().slice(0,10)}.html`;a.click();
+  toast('Fichier HTML exporté ✓');
+}
+
+render();
+</script>
+
+
+</body></html>
