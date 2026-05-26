@@ -281,6 +281,16 @@ let activeEmp = '';
 function pad(n){return String(n).padStart(2,'0');}
 function ds(y,m,d){return `${y}-${pad(m+1)}-${pad(d)}`;}
 
+function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+function matchSearch(e, q){
+  if(!q) return true;
+  const n = norm(q);
+  const extra = e.type==='ferie' ? 'jour ferier ferie feries' : e.type==='vacances' ? 'vacances' : 'fete employe';
+  const hay = norm(e.title+' '+e.employe+' '+e.type+' '+extra);
+  return hay.includes(n);
+}
+
 function fmtDate(dateStr){
   const [y,m,d] = dateStr.split('-').map(Number);
   return `${d} ${MONTHS_SHORT[m-1]} ${y}`;
@@ -307,12 +317,12 @@ function updateEmpPanel(q){
   if(!q){ panel.classList.add('hidden'); return; }
 
   const ql = q.toLowerCase();
-  const matched = events.filter(e => (e.title+e.employe+e.type).toLowerCase().includes(ql));
+  const matched = events.filter(e => matchSearch(e, ql));
   if(!matched.length){ panel.classList.add('hidden'); return; }
 
   // Determine panel title
   let name;
-  if(ql.includes('féri') || ql === 'ferie') name = 'Jours fériés';
+  if(norm(ql).includes('feri') || norm(ql).includes('jour f')) name = 'Jours fériés';
   else if(ql.includes('vac')) name = 'Vacances';
   else if(ql.includes('fête') || ql.includes('fete')) name = 'Fêtes employés';
   else {
@@ -366,7 +376,7 @@ function render(){
     else{day=i-firstDay+1;}
     const d=ds(yr,mo,day);
     const isToday=yr===today.getFullYear()&&mo===today.getMonth()&&day===today.getDate();
-    const evs=events.filter(e=>e.date===d&&(!q||(e.title+e.employe+e.type).toLowerCase().includes(q)));
+    const evs=events.filter(e=>e.date===d&&matchSearch(e,q));
     const numEl=isToday
       ? `<div class="day-num"><div class="today-num">${day}</div></div>`
       : `<div class="day-num">${day}</div>`;
